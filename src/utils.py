@@ -148,15 +148,17 @@ async def display(self, message, args):
     sql_args = [message.guild.id]
     res = db.exec(sql, sql_args)
 
+    all = ""
     for member in res:
         if not member or not member[db.POS_WALLET]:
             continue  # Treat this as empty
 
         tokens = get_account_tokens(member[db.POS_WALLET])
+        all += f"**{member[1]}** currently has **{tokens} eGLD** which convert to ...\n"
 
-        await disc.send_message(message, title="Current balance",
-                                desc=f"{member[1]} currently has **{tokens} eGLD** which convert to ...",
-                                url="https://wallet.elrond.com/")
+    await disc.send_message(message, title="Current balance",
+                            desc=all,
+                            url="https://wallet.elrond.com/")
 
 
 if not os.path.exists("db"):
