@@ -1,0 +1,23 @@
+# Link to a wallet: Will bind your wallet-id to this discord. If on multiple discords, others don't have access to your possessed amount of eGLD
+`egld$set <wallet_id>`
+`egld$join <wallet_id>`
+`egld$link <wallet_id>`
+
+# Unlink a wallet: Will remove your wallet-id from the current discord
+`egld$unset`: utils.delete,
+`egld$delete`: utils.delete,
+`egld$unlink`: utils.delete,
+
+# Display: Will show current value of eGLD or/and with your amount
+`egld$value`: utils.value,
+`egld$wallet`: utils.display_me,
+
+# Server display: Will show all discord members' wallets
+`egld$wallets`: utils.display,
+
+# Link / Unlink all wallets accross all servers
+`me$delete`: utils.delete_all,
+`me$remove`: utils.delete_all,
+
+# Displays this :)
+`egld$help`: utils.help,
