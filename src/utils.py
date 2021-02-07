@@ -130,7 +130,7 @@ async def display_me(self, message, args):
         return await disc.error_message(message, title="🤯 Oops...",
                                         desc="You probably just forgot to link your wallet !\nSee `egold$help` for more informations")
 
-    wallet = res[0][3]  # 4th value is the wallet
+    wallet = res[0][db.POS_WALLET]
     tokens = get_account_tokens(wallet)
 
     try:
@@ -149,10 +149,10 @@ async def display(self, message, args):
     res = db.exec(sql, sql_args)
 
     for member in res:
-        if not member or not member[2]:
+        if not member or not member[db.POS_WALLET]:
             continue  # Treat this as empty
 
-        tokens = get_account_tokens(member[3])  # 4th value is the wallet
+        tokens = get_account_tokens(member[db.POS_WALLET])
 
         await disc.send_message(message, title="Current balance",
                                 desc=f"{member[1]} currently has **{tokens} eGLD** which convert to ...",
