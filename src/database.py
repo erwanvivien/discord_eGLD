@@ -23,14 +23,14 @@ def create():
     exec(sql_create_members)
 
 
-def exec(sql, args=None):
+def exec(sql, sql_args=None):
     conn = sqlite3.connect(DB_PATH)
     if not conn:
         return None
     cur = conn.cursor()
 
-    if args:
-        res = cur.execute(sql, args).fetchall()
+    if sql_args:
+        res = cur.execute(sql, sql_args).fetchall()
     else:
         res = cur.execute(sql).fetchall()
 
@@ -42,8 +42,8 @@ def exec(sql, args=None):
 
 def member_exist(member_id, guild_id):
     sql = f'''SELECT * FROM members WHERE id = ? AND id_discord = ?'''
-    args = [member_id, guild_id]
-    db = exec(sql, args)
+    sql_args = [member_id, guild_id]
+    db = exec(sql, sql_args)
 
     for row in db:
         if member_id == row[0]:
@@ -54,14 +54,14 @@ def member_exist(member_id, guild_id):
 
 def member_add(member_id, guild_id):
     sql = f'''INSERT INTO members (id, id_discord, wallet) VALUES (?, ?, ?)'''
-    args = [member_id, guild_id, ""]
-    exec(sql, args)
+    sql_args = [member_id, guild_id, ""]
+    exec(sql, sql_args)
 
 
 def member_delete(member_id, guild_id=None):
     sql = f'''DELETE FROM members WHERE id = ? AND id_discord = ?'''
-    args = [member_id, guild_id]
-    exec(sql, args)
+    sql_args = [member_id, guild_id]
+    exec(sql, sql_args)
 
 
 if not os.path.exists("db"):
