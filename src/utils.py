@@ -137,12 +137,15 @@ def get_account_tokens(wallet):
     return str(tokens)
 
 
-def pretty_string(name, egld, usd):
+def pretty_string(name, egld, usdt):
+    s_egld = str(egld)
+    s_usdt = str(usdt)
+
     s = f"{name}"
-    s += ' ' * (20 - len(s))
+    s += ' ' * (25 - len(s) - len(s_egld))
     s += f"{egld}"
-    s += ' ' * (40 - len(s))
-    s += f"{usd}\n"
+    s += ' ' * (38 - len(s) - len(s_usdt))
+    s += f"{usdt}\n"
     # s += ' ' * (60 - len(s))
     return s
 
@@ -157,7 +160,7 @@ async def display_me(self, message, args):
                                         desc="You probably just forgot to link your wallet !\nSee `egold$help` for more informations")
 
     wallet = res[0][db.POS_WALLET]
-    tokens = float(get_account_tokens(wallet))
+    tokens = round(float(get_account_tokens(wallet)), 4)
     price = binance.get_price("EGLDUSDT")
     equi = tokens * price
 
@@ -176,19 +179,37 @@ async def display(self, message, args):
     sql_args = [message.guild.id]
     res = db.exec(sql, sql_args)
 
-    all = pretty_string("NAME", "EGLD", "USD") + "\n"
     price = binance.get_price("EGLDUSDT")
+    all = pretty_string("NAME", "EGLD", "USD") + "\n"
+    all += pretty_string("Current", "1", price)
+    all += ('-' * 38) + '\n'
+
+    total_egld = 0
+    total_usdt = 0
 
     for member in res:
         if not member or not member[db.POS_WALLET]:
             continue  # Treat this as empty
 
-        tokens = float(get_account_tokens(member[db.POS_WALLET]))
-        equi = tokens * price
+        tokens = round(float(get_account_tokens(member[db.POS_WALLET])), 4)
+        equi = round(tokens * price, 2)
+        total_egld += tokens
+        total_usdt += equi
         all += pretty_string(member[1], tokens, equi)
-        # all += f"**{member[1]}** currently has **{tokens} eGLD** which convert to **{equi}$**\n"
 
-    await disc.send_message(message, title="Current balance",
+    all += ('=' * 38) + '\n'
+    all += pretty_string("Total:", total_egld, round(total_usdt, 2))
+
+    (priceChange, priceChangePercent) = binance.stats("EGLDUSDT")
+    if priceChange == -100000:
+        s = "Discord's balance"
+    else:
+        emj1 = "↗" if priceChange > 0 else "↘"
+        emj2 = "↗" if priceChangePercent > 0 else "↘"
+
+        s = f"{emj1} {priceChange}$ ----- EGLD ----- {emj2} {priceChangePercent}% last 24H"
+
+    await disc.send_message(message, title=s,
                             desc=f"```\n{all}\n```",
                             url="https://wallet.elrond.com/")
 
