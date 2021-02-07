@@ -4,6 +4,8 @@ import json
 import os
 import datetime
 
+import database as db
+
 
 LOG_FILE = "db/log"
 
@@ -22,6 +24,10 @@ def get_content(file):
 
 
 def log(fctname, error, message):
+    """
+    Pretty printer for logs
+    """
+
     now = datetime.datetime.now()
     log = f"[{now}]: " + \
         str(error) + '\n' + ('+' * 4) + (' ' * 4) + \
@@ -36,9 +42,25 @@ def log(fctname, error, message):
     f.close()
 
 
-if not os.path.exists("db"):
-    log("DB folder", "DB folder did not exist", "Creating DB folder")
+def check_member(message):
+    if not db.member_exist(message.author.id, message.guild.id):
+        log("check_member", "Adding member",
+            f"Added member {message.author.id} with guild {message.guild.id}")
+        db.member_add(message.author.id, message.guild.id)
 
+
+async def add(self, message, args):
+    pass
+
+
+async def delete(self, message, args):
+    pass
+
+
+if not os.path.exists("db"):
     os.mkdir("db")
     f = open(LOG_FILE, "w")
     f.close()
+
+    # After because we need the folder
+    log("DB folder", "DB folder did not exist", "Creating DB folder")
