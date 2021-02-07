@@ -126,7 +126,7 @@ async def display_me(self, message, args):
     sql_args = [message.author.id, message.guild.id]
     res = db.exec(sql, sql_args)
 
-    if not res:
+    if not res or not res[0][db.POS_WALLET]:
         return await disc.error_message(message, title="🤯 Oops...",
                                         desc="You probably just forgot to link your wallet !\nSee `egold$help` for more informations")
 
