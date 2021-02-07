@@ -161,6 +161,11 @@ async def display(self, message, args):
                             url="https://wallet.elrond.com/")
 
 
+async def help(self, message, args):
+    help_str = get_content("help")
+    await disc.send_message(message, title="Help !", desc=help_str)
+
+
 if not os.path.exists("db"):
     os.mkdir("db")
     f = open(LOG_FILE, "w")

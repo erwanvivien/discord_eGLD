@@ -38,6 +38,8 @@ CMDS = {
     # Link / Unlink all wallets accross all servers
     "me$delete": utils.delete_all,
     "me$remove": utils.delete_all,
+
+    "egld$help": utils.help,
 }
 
 
