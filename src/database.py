@@ -7,6 +7,11 @@ import utils
 
 DB_PATH = "db/database.db"
 
+POS_ID = 0
+POS_NAME = 1
+POS_GUILD = 2
+POS_WALLET = 3
+
 
 def create():
     if not os.path.exists(DB_PATH):
@@ -16,6 +21,7 @@ def create():
     sql_create_members = """CREATE TABLE IF NOT EXISTS members
     (
         id              INTEGER NOT NULL PRIMARY KEY,
+        name            TEXT NOT NULL,
         id_discord      INTEGER NOT NULL,
 
         wallet          TEXT
@@ -40,27 +46,28 @@ def exec(sql, sql_args=None):
     return res
 
 
-def member_exist(member_id, guild_id):
+def member_exist(message):
     sql = f'''SELECT * FROM members WHERE id = ? AND id_discord = ?'''
-    sql_args = [member_id, guild_id]
+    sql_args = [message.author.id, message.guild.id]
     db = exec(sql, sql_args)
 
     for row in db:
-        if member_id == row[0]:
+        if message.author.id == row[0]:
             return True
 
     return False
 
 
-def member_add(member_id, guild_id):
-    sql = f'''INSERT INTO members (id, id_discord, wallet) VALUES (?, ?, ?)'''
-    sql_args = [member_id, guild_id, ""]
+def member_add(message):
+    sql = f'''INSERT INTO members (id, name, id_discord, wallet) VALUES (?, ?, ?, ?)'''
+    sql_args = [message.author.id,
+                message.author.name, message.guild.id, ""]
     exec(sql, sql_args)
 
 
-def member_delete(member_id, guild_id=None):
+def member_delete(message):
     sql = f'''DELETE FROM members WHERE id = ? AND id_discord = ?'''
-    sql_args = [member_id, guild_id]
+    sql_args = [message.author.id, message.guild.id]
     exec(sql, sql_args)
 
 
