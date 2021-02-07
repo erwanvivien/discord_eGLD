@@ -3,9 +3,9 @@ import os
 from discord.ext import commands
 
 
-# import discord_utils
-import utils
+import discord_utils
 import database as db
+import utils
 
 BOT_IDS = []
 DEV_IDS = [289145021922279425]
@@ -48,6 +48,21 @@ class Client(discord.Client):
     async def on_message(self, message):
         if message.author.id in BOT_IDS:        # Doesn't do anything if it's a bot message
             return
+
+        split = message.content.split(' ', 1)  # separate mom?[cmd] from args
+        cmd = split[0].lower()
+        args = split[1].split(' ') if len(split) > 1 else []
+
+        # Get Discord Nick if existant or discord Name
+        name = discord_utils.author_name(message.author, False)
+
+        # Runs command if it's a known command
+        if cmd in CMDS:
+            utils.check_member(message)
+            utils.log("on_message", "Command execution",
+                      f"{name} from discord {message.guild.id} issued {cmd} command. <{args}>")
+
+            await CMDS[cmd](self, message, args)
 
 
 db.create()
