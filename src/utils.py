@@ -87,6 +87,18 @@ async def delete(self, message, args):
     db.exec(sql, sql_args)
 
 
+async def add_all(self, message, args):
+    sql = """UPDATE members SET wallet = ? WHERE id = ?"""
+    sql_args = ["", message.author.id]
+    db.exec(sql, sql_args)
+
+
+async def delete_all(self, message, args):
+    sql = """UPDATE members SET wallet = ? WHERE id = ?"""
+    sql_args = ["", message.author.id]
+    db.exec(sql, sql_args)
+
+
 async def delete_member(self, message, args):
     sql = """DELETE FROM members WHERE id = ?"""
     sql_args = [message.author.id]
