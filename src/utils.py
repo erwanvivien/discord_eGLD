@@ -7,6 +7,7 @@ import datetime
 import database as db
 import discord_utils as disc
 
+import binance
 
 LOG_FILE = "db/log"
 
@@ -20,7 +21,6 @@ def get_content(file):
     except Exception as error:
         log("get_content", error, f"error reading file {file}")
         return ""
-
     return s
 
 
@@ -106,7 +106,23 @@ async def delete_member(self, message, args):
 
 
 async def value(self, message, args):
-    pass
+    if len(args) == 0:
+        price = binance.get_price("EGLDUSDT")
+        return await disc.send_message(message, title="Current value eGLD",
+                                       desc=f"Current price is **{price}**",
+                                       url="https://www.binance.com/en-NG/trade/EGLD_BTC")
+
+    currency = args[0]
+    currency_check = currency.replace("_", "")
+    price = binance.get_price(currency_check)
+    if price < 0:
+        return await disc.error_message(message, title=f"😱 Oops... !",
+                                        desc=f"We could not fetch any information about {currency}" +
+                                        f"See if the money exists here: https://www.binance.com/en-NG/trade/{currency}")
+
+    return await disc.send_message(message, title=f"Current value {currency}",
+                                   desc=f"Current price is **{price}**",
+                                   url=f"https://www.binance.com/en-NG/trade/{currency}")
 
 
 def get_account_tokens(wallet):
@@ -121,6 +137,16 @@ def get_account_tokens(wallet):
     return str(tokens)
 
 
+def pretty_string(name, egld, usd):
+    s = f"{name}"
+    s += ' ' * (20 - len(s))
+    s += f"{egld}"
+    s += ' ' * (40 - len(s))
+    s += f"{usd}\n"
+    # s += ' ' * (60 - len(s))
+    return s
+
+
 async def display_me(self, message, args):
     sql = f"SELECT * FROM members WHERE id = ? AND id_discord = ?"
     sql_args = [message.author.id, message.guild.id]
@@ -131,12 +157,14 @@ async def display_me(self, message, args):
                                         desc="You probably just forgot to link your wallet !\nSee `egold$help` for more informations")
 
     wallet = res[0][db.POS_WALLET]
-    tokens = get_account_tokens(wallet)
+    tokens = float(get_account_tokens(wallet))
+    price = binance.get_price("EGLDUSDT")
+    equi = tokens * price
 
     try:
         tokens = float(tokens)
         await disc.send_message(message, title="Current balance",
-                                desc=f"You currently have **{tokens} eGLD** which convert to ...",
+                                desc=f"You currently have **{tokens} eGLD** which convert to **{equi}$**",
                                 url="https://wallet.elrond.com/")
     except:
         await disc.error_message(message, title="Something went wrong !",
@@ -148,16 +176,20 @@ async def display(self, message, args):
     sql_args = [message.guild.id]
     res = db.exec(sql, sql_args)
 
-    all = ""
+    all = pretty_string("NAME", "EGLD", "USD") + "\n"
+    price = binance.get_price("EGLDUSDT")
+
     for member in res:
         if not member or not member[db.POS_WALLET]:
             continue  # Treat this as empty
 
-        tokens = get_account_tokens(member[db.POS_WALLET])
-        all += f"**{member[1]}** currently has **{tokens} eGLD** which convert to ...\n"
+        tokens = float(get_account_tokens(member[db.POS_WALLET]))
+        equi = tokens * price
+        all += pretty_string(member[1], tokens, equi)
+        # all += f"**{member[1]}** currently has **{tokens} eGLD** which convert to **{equi}$**\n"
 
     await disc.send_message(message, title="Current balance",
-                            desc=all,
+                            desc=f"```\n{all}\n```",
                             url="https://wallet.elrond.com/")
 
 
