@@ -44,10 +44,10 @@ def log(fctname, error, message):
 
 
 def check_member(message):
-    if not db.member_exist(message.author.id, message.guild.id):
+    if not db.member_exist(message):
         log("check_member", "Adding member",
             f"Added member {message.author.id} with guild {message.guild.id}")
-        db.member_add(message.author.id, message.guild.id)
+        db.member_add(message)
 
 
 def check_token(address):
@@ -109,6 +109,18 @@ async def value(self, message, args):
     pass
 
 
+def get_account_tokens(wallet):
+    r = requests.get(f"https://api.elrond.com/address/{wallet}")
+    js = r.json()
+    if "error" in js:
+        return js["error"]
+
+    balance = float(js["data"]["account"]["balance"])
+    tokens = balance / 1000000000000000000
+
+    return str(tokens)
+
+
 async def display_me(self, message, args):
     sql = f"SELECT * FROM members WHERE id = ? AND id_discord = ?"
     sql_args = [message.author.id, message.guild.id]
@@ -117,22 +129,34 @@ async def display_me(self, message, args):
     if not res:
         return await disc.error_message(message, title="🤯 Oops...",
                                         desc="You probably just forgot to link your wallet !\nSee `egold$help` for more informations")
-    wallet = res[0][2]  # 3rd value is the wallet
-    r = requests.get(f"https://api.elrond.com/address/{wallet}")
-    js = r.json()
-    if "error" in js:
-        return await disc.error_message(message, title="Something went wrong !",
-                                        desc="We got an error from Elrond when checking your wallet\nError is `" + js["error"] + "`")
 
-    balance = float(js["data"]["account"]["balance"])
-    tokens = balance / 1000000000000000000
-    await disc.send_message(message, title="Current balance",
-                            desc=f"You currently have **{tokens} eGLD** which convert to ...",
-                            url="https://wallet.elrond.com/")
+    wallet = res[0][3]  # 4th value is the wallet
+    tokens = get_account_tokens(wallet)
+
+    try:
+        tokens = float(tokens)
+        await disc.send_message(message, title="Current balance",
+                                desc=f"You currently have **{tokens} eGLD** which convert to ...",
+                                url="https://wallet.elrond.com/")
+    except:
+        await disc.error_message(message, title="Something went wrong !",
+                                 desc="We got an error from Elrond when checking your wallet\nError is `" + tokens + "`")
 
 
 async def display(self, message, args):
-    pass
+    sql = f"SELECT * FROM members WHERE id_discord = ?"
+    sql_args = [message.guild.id]
+    res = db.exec(sql, sql_args)
+
+    for member in res:
+        if not member or not member[2]:
+            continue  # Treat this as empty
+
+        tokens = get_account_tokens(member[3])  # 4th value is the wallet
+
+        await disc.send_message(message, title="Current balance",
+                                desc=f"{member[1]} currently has **{tokens} eGLD** which convert to ...",
+                                url="https://wallet.elrond.com/")
 
 
 if not os.path.exists("db"):
