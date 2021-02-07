@@ -20,7 +20,7 @@ def create():
 
     sql_create_members = """CREATE TABLE IF NOT EXISTS members
     (
-        id              INTEGER NOT NULL PRIMARY KEY,
+        id              INTEGER NOT NULL,
         name            TEXT NOT NULL,
         id_discord      INTEGER NOT NULL,
 
