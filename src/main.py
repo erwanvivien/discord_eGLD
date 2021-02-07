@@ -14,7 +14,7 @@ ERRORS = []
 
 DISC_LNK = "https://discord.com/api/oauth2/authorize?client_id=807967570962939914&permissions=10304&scope=bot"
 
-token = utils.get_content("token_dev")
+token = utils.get_content("token")
 
 
 CMDS = {
@@ -39,6 +39,7 @@ CMDS = {
     "me$delete": utils.delete_all,
     "me$remove": utils.delete_all,
 
+    # Help message
     "egld$help": utils.help,
 }
 
