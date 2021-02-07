@@ -5,6 +5,7 @@ import os
 import datetime
 
 import database as db
+import discord_utils as disc
 
 
 LOG_FILE = "db/log"
@@ -50,11 +51,20 @@ def check_member(message):
 
 
 async def add(self, message, args):
-    pass
+    if len(args) != 1:
+        return await disc.error_message(message, title="Wrong usage",
+                                        desc="The `add` function takes only `1` parameter, the Maiar wallet ID")
+
+    # TODO: Need to check if wallet is valid.
+    sql = """UPDATE members SET wallet = ? WHERE id = ? AND id_discord = ?"""
+    args = [args[0], message.author.id, message.guild.id]
+    db.exec(sql, args)
 
 
 async def delete(self, message, args):
-    pass
+    sql = """UPDATE members SET wallet = ? WHERE id = ? AND id_discord = ?"""
+    args = ["", message.author.id, message.guild.id]
+    db.exec(sql, args)
 
 
 if not os.path.exists("db"):
