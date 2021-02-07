@@ -110,7 +110,25 @@ async def value(self, message, args):
 
 
 async def display_me(self, message, args):
-    pass
+    sql = f"SELECT * FROM members WHERE id = ? AND id_discord = ?"
+    sql_args = [message.author.id, message.guild.id]
+    res = db.exec(sql, sql_args)
+
+    if not res:
+        return await disc.error_message(message, title="🤯 Oops...",
+                                        desc="You probably just forgot to link your wallet !\nSee `egold$help` for more informations")
+    wallet = res[0][2]  # 3rd value is the wallet
+    r = requests.get(f"https://api.elrond.com/address/{wallet}")
+    js = r.json()
+    if "error" in js:
+        return await disc.error_message(message, title="Something went wrong !",
+                                        desc="We got an error from Elrond when checking your wallet\nError is `" + js["error"] + "`")
+
+    balance = float(js["data"]["account"]["balance"])
+    tokens = balance / 1000000000000000000
+    await disc.send_message(message, title="Current balance",
+                            desc=f"You currently have **{tokens} eGLD** which convert to ...",
+                            url="https://wallet.elrond.com/")
 
 
 async def display(self, message, args):
