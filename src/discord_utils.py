@@ -1,8 +1,8 @@
 import discord
 import random
 # from utils import subreddit_json, get_content
-import utils
 import database as db
+import utils
 
 WRONG_USAGE = "Something went wrong"
 HELP_USAGE = "Please see `egold help` for further information"
