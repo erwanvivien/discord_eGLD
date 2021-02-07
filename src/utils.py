@@ -50,21 +50,41 @@ def check_member(message):
         db.member_add(message.author.id, message.guild.id)
 
 
+def check_token(address):
+    r = requests.get(f"https://api.elrond.com/address/{address}")
+    js = r.json()
+
+    if "error" in js:
+        log("check_token", "Bad address",
+            f"Address {address} is not fetchable.")
+        return f"error {r.status_code}: " + js["error"]
+    return ""
+
+
 async def add(self, message, args):
+    await message.delete()
     if len(args) != 1:
-        return await disc.error_message(message, title="Wrong usage",
+        return await disc.error_message(message, title="🤯 Wrong usage",
                                         desc="The `add` function takes only `1` parameter, the Maiar wallet ID")
 
-    # TODO: Need to check if wallet is valid.
+    address = args[0]
+    error_code = check_token(address)
+    if error_code != "":
+        return await disc.error_message(message, title="⁉ Wrong address",
+                                        desc="You did not provide a good address\n" +
+                                        f"eGLD sent this: `{error_code}`")
+
     sql = """UPDATE members SET wallet = ? WHERE id = ? AND id_discord = ?"""
-    args = [args[0], message.author.id, message.guild.id]
-    db.exec(sql, args)
+    sql_args = [args[0], message.author.id, message.guild.id]
+    db.exec(sql, sql_args)
+
+    await disc.send_message(message, title="💹 Success !", desc="You successfully linked your eGLD wallet")
 
 
 async def delete(self, message, args):
     sql = """UPDATE members SET wallet = ? WHERE id = ? AND id_discord = ?"""
-    args = ["", message.author.id, message.guild.id]
-    db.exec(sql, args)
+    sql_args = ["", message.author.id, message.guild.id]
+    db.exec(sql, sql_args)
 
 
 if not os.path.exists("db"):
