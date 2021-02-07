@@ -105,6 +105,18 @@ async def delete_member(self, message, args):
     db.exec(sql, sql_args)
 
 
+async def value(self, message, args):
+    pass
+
+
+async def display_me(self, message, args):
+    pass
+
+
+async def display(self, message, args):
+    pass
+
+
 if not os.path.exists("db"):
     os.mkdir("db")
     f = open(LOG_FILE, "w")

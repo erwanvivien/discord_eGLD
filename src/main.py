@@ -18,18 +18,26 @@ token = utils.get_content("token_dev")
 
 
 CMDS = {
-    "egld$add": utils.add,
+    # Link to a wallet
     "egld$set": utils.add,
-    "egld$wallet": utils.add,
+    "egld$join": utils.add,
     "egld$link": utils.add,
 
+    # Unlink a wallet
     "egld$unset": utils.delete,
     "egld$delete": utils.delete,
-    "egld$remove": utils.delete,
     "egld$unlink": utils.delete,
 
-    "me$delete": utils.delete_member,
-    "me$remove": utils.delete_member,
+    # Display
+    "egld$value": utils.value,
+    "egld$wallet": utils.display_me,
+
+    # Server display
+    "egld$wallets": utils.display,
+
+    # Link / Unlink all wallets accross all servers
+    "me$delete": utils.delete_all,
+    "me$remove": utils.delete_all,
 }
 
 
