@@ -19,12 +19,17 @@ token = utils.get_content("token_dev")
 
 CMDS = {
     "egld$add": utils.add,
+    "egld$set": utils.add,
     "egld$wallet": utils.add,
     "egld$link": utils.add,
 
+    "egld$unset": utils.delete,
     "egld$delete": utils.delete,
     "egld$remove": utils.delete,
     "egld$unlink": utils.delete,
+
+    "me$delete": utils.delete_member,
+    "me$remove": utils.delete_member,
 }
 
 
