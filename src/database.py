@@ -18,9 +18,7 @@ def create():
         id              INTEGER NOT NULL PRIMARY KEY,
         id_discord      INTEGER NOT NULL,
 
-        wallet          TEXT,
-
-        FOREIGN KEY(id_discord) REFERENCES discords(id)
+        wallet          TEXT
     );"""
     exec(sql_create_members)
 
@@ -42,9 +40,10 @@ def exec(sql, args=None):
     return res
 
 
-def member_exist(member_id, guild_id=None):
-    sql = f'''SELECT * FROM members WHERE id = {member_id}'''
-    db = exec(sql)
+def member_exist(member_id, guild_id):
+    sql = f'''SELECT * FROM members WHERE id = ? AND id_discord = ?'''
+    args = [member_id, guild_id]
+    db = exec(sql, args)
 
     for row in db:
         if member_id == row[0]:
@@ -60,8 +59,9 @@ def member_add(member_id, guild_id):
 
 
 def member_delete(member_id, guild_id=None):
-    sql = f'''DELETE FROM members WHERE id = {member_id}'''
-    exec(sql)
+    sql = f'''DELETE FROM members WHERE id = ? AND id_discord = ?'''
+    args = [member_id, guild_id]
+    exec(sql, args)
 
 
 if not os.path.exists("db"):
