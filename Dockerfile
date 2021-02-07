@@ -5,7 +5,8 @@ WORKDIR /app
 COPY [ "src/", "." ]
 COPY [ "requirements.txt", "." ]
 COPY [ "token", "."]
-COPY [ "binance-*", "." ]
+COPY [ "binance-key", "." ]
+COPY [ "binance-secret", "." ]
 
 RUN pip install -r requirements.txt
 RUN mkdir db
