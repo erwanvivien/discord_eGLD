@@ -5,7 +5,7 @@ import database as db
 import utils
 
 WRONG_USAGE = "Something went wrong"
-HELP_USAGE = "Please see `egold help` for further information"
+HELP_USAGE = "Please see `egld$help` for further information"
 HOWTO_URL = "https://github.com/erwanvivien/discord-egold"
 
 BOT_COLOR = discord.Colour(0x8b8349)
@@ -28,10 +28,10 @@ def create_embed(title, desc, colour=BOT_COLOR, url=HOWTO_URL):
                          url=url)
 
 
-async def error_message(message, title=WRONG_USAGE, desc=HELP_USAGE):
+async def error_message(message, title=WRONG_USAGE, desc=HELP_USAGE, url=HOWTO_URL):
     # Sends error message to discord (red)
     try:
-        return await message.channel.send(embed=create_embed(title, desc, ERROR_COLOR, HOWTO_URL))
+        return await message.channel.send(embed=create_embed(title, desc, ERROR_COLOR, url))
     except Exception as error:
         utils.log("error_message", error,
                   "Could not send **error** message to discord")
@@ -40,7 +40,7 @@ async def error_message(message, title=WRONG_USAGE, desc=HELP_USAGE):
 async def send_message(message, title=WRONG_USAGE, desc=HELP_USAGE, url=HOWTO_URL):
     # Sends message to discord (bot_color)
     try:
-        return await message.channel.send(embed=create_embed(title, desc, BOT_COLOR, HOWTO_URL))
+        return await message.channel.send(embed=create_embed(title, desc, BOT_COLOR, url))
     except Exception as error:
         utils.log("error_message", error,
                   "Could not send message to discord")
@@ -49,7 +49,7 @@ async def send_message(message, title=WRONG_USAGE, desc=HELP_USAGE, url=HOWTO_UR
 async def edit_message(message, title=WRONG_USAGE, desc=HELP_USAGE, url=HOWTO_URL):
     # Sends message to discord (bot_color)
     try:
-        return await message.edit(embed=create_embed(title, desc, BOT_COLOR, HOWTO_URL))
+        return await message.edit(embed=create_embed(title, desc, BOT_COLOR, url))
     except Exception as error:
         utils.log("error_message", error,
                   "Could not send message to discord")
