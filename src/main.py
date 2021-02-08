@@ -112,7 +112,7 @@ async def cron():
             last_log_file = datetime.datetime.now()
             utils.log("cron", "Reseted the log file", "RESET!!")
 
-        if last_update_egld + datetime.timedelta(minutes=5) < datetime.datetime.now():
+        if binance.price >= 0 and last_update_egld + datetime.timedelta(minutes=5) < datetime.datetime.now():
             sql = "INSERT INTO prices (val, date) VALUES (?, ?)"
             sql_args = [binance.price, str(datetime.datetime.now())]
 
