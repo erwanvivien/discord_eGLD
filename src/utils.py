@@ -250,7 +250,7 @@ async def members(self, message, args):
 
 async def dev_prices(self, message, args):
     if not message.author.id in DEV_IDS:
-        return
+        return await disc.error_message(message, title="💥🥵 Error", desc="It seems like you are not a developper ???\nHow did you find this command ? 😝")
 
     sql = "SELECT * FROM prices ORDER BY date DESC LIMIT 100"
     rows = db.exec(sql)
@@ -264,7 +264,7 @@ async def dev_prices(self, message, args):
 
 async def dev_clean(self, message, args):
     if not message.author.id in DEV_IDS:
-        return
+        return await disc.error_message(message, title="💥🥵 Error", desc="It seems like you are not a developper ???\nHow did you find this command ? 😝")
 
     try:
         value = float(args[0])
