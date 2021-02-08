@@ -16,7 +16,7 @@ ERRORS = []
 
 DISC_LNK = "https://discord.com/api/oauth2/authorize?client_id=807967570962939914&permissions=10304&scope=bot"
 
-token = utils.get_content("token")
+token = utils.get_content("token_dev")
 
 
 CMDS = {
@@ -88,8 +88,7 @@ client = Client()
 async def status_task():
     await client.wait_until_ready()
     while True:
-        binance.update_price("EGLDUSDT")
-        binance.update_stats("EGLDUSDT")
+        binance.update()
 
         await client.change_presence(
             status=discord.Status.online,
