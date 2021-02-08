@@ -14,8 +14,9 @@ Unlink a wallet: Will remove your wallet-id from the current discord
 `egld$unset | egld$delete | egld$unlink`
 
 💹
-Display: Will show current value of eGLD or/and with your amount
+Display: Display information about the currency
 `egld$value`
+`egld$stats`
 `egld$wallet`
 
 Server display: Will show all discord members' wallets
