@@ -262,6 +262,23 @@ async def dev_prices(self, message, args):
     await disc.send_message(message, title="Print prices", desc=rows_string)
 
 
+async def dev_clean(self, message, args):
+    if not message.author.id in DEV_IDS:
+        return
+
+    try:
+        value = float(args[0])
+    except:
+        return await disc.error_message(message, title="Wrong usage", desc="You didn't provide an integer value")
+
+    sql = "DELETE FROM prices WHERE val < ?"
+    sql_args = [value]
+
+    db.exec(sql, sql_args)
+
+    await disc.send_message(message, title="Cleaned DB", desc=f"Removed all values bellow {value}$ !")
+
+
 if not os.path.exists("db"):
     os.mkdir("db")
     f = open(LOG_FILE, "w")
