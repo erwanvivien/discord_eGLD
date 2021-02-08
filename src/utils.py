@@ -198,11 +198,13 @@ async def display(self, message, args):
         all += pretty_string(member[1], tokens, equi)
 
     all += ('=' * 38) + '\n'
+
+    total_egld = round(total_egld, 4)
+    total_usdt = round(total_usdt, 2)
     all += pretty_string("Total:", total_egld, round(total_usdt, 2))
 
     emj1 = "↗" if binance.priceChange > 0 else "↘"
     emj2 = "↗" if binance.priceChangePercent > 0 else "↘"
-
     s = f"{emj1} {binance.priceChange}$ ----- EGLD ----- {emj2} {binance.priceChangePercent}% last 24H"
 
     await disc.send_message(message, title=s,
