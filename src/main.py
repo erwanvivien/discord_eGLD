@@ -14,7 +14,7 @@ ERRORS = []
 
 DISC_LNK = "https://discord.com/api/oauth2/authorize?client_id=807967570962939914&permissions=10304&scope=bot"
 
-token = utils.get_content("token")
+token = utils.get_content("token_dev")
 
 
 CMDS = {
@@ -30,6 +30,8 @@ CMDS = {
 
     # Display
     "egld$value": utils.value,
+    "egld$stat": utils.stats,
+    "egld$stats": utils.stats,
     "egld$wallet": utils.display_me,
 
     # Server display

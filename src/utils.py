@@ -219,6 +219,17 @@ async def help(self, message, args):
     await disc.send_message(message, title="Help !", desc=help_str)
 
 
+async def stats(self, message, args):
+    (priceChange, priceChangePercent) = binance.stats("EGLDUSDT")
+    if priceChange == -100000:
+        return await disc.error_message(message, title="Something went wrong", desc="We could not fetch any data from Binance\nWe are sorry !")
+    else:
+        emj1 = "↗" if priceChange > 0 else "↘"
+        emj2 = "↗" if priceChangePercent > 0 else "↘"
+
+        s = f"{emj1} {priceChange}$\n{emj2} {priceChangePercent}%"
+        return await disc.send_message(message, title="Last's 24h", desc=s)
+
 if not os.path.exists("db"):
     os.mkdir("db")
     f = open(LOG_FILE, "w")
