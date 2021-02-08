@@ -28,6 +28,14 @@ def create():
     );"""
     exec(sql_create_members)
 
+    sql_create_values = """CREATE TABLE IF NOT EXISTS prices
+    (
+        id              INTEGER PRIMARY KEY NOT NULL,
+        val             REAL NOT NULL,
+        date            TEXT NOT NULL
+    );"""
+    exec(sql_create_values)
+
 
 def exec(sql, sql_args=None):
     conn = sqlite3.connect(DB_PATH)

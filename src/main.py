@@ -17,9 +17,10 @@ ERRORS = []
 
 DISC_LNK = "https://discord.com/api/oauth2/authorize?client_id=807967570962939914&permissions=10304&scope=bot"
 
-token = utils.get_content("token")
+token = utils.get_content("token_dev")
 
 last_log_file = datetime.datetime.now()
+last_update_egld = datetime.datetime.now() - datetime.timedelta(minutes=60)
 
 
 CMDS = {
@@ -97,14 +98,26 @@ db.create()
 client = Client()
 
 
-async def status_task():
+async def cron():
+    global last_log_file
+    global last_update_egld
+
     # ALWAYS CLEAR LOG FILE HERE
     await client.wait_until_ready()
     while True:
+        if last_update_egld + datetime.timedelta(minutes=5) < datetime.datetime.now():
+            sql = "INSERT INTO prices (val, date) VALUES (?, ?)"
+            sql_args = [binance.price, str(datetime.datetime.now())]
+
+            db.exec(sql, sql_args)
+
+            last_update_egld = datetime.datetime.now()
+
         if last_log_file + datetime.timedelta(days=2) < datetime.datetime.now():
             f = open(utils.LOG_FILE, "w")  # resets the file
             f.close()
-            utils.log("status_task", "Reseted the log file", "RESET!!")
+            last_log_file = datetime.datetime.now()
+            utils.log("cron", "Reseted the log file", "RESET!!")
 
         binance.update()
 
@@ -116,5 +129,5 @@ async def status_task():
 
         await asyncio.sleep(15)
 
-client.loop.create_task(status_task())
+client.loop.create_task(cron())
 client.run(token)
