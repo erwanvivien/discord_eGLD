@@ -40,6 +40,7 @@ CMDS = {
     "egld$wallet": utils.display_me,
 
     # Server display
+    "egld$stonks": utils.display,
     "egld$wallets": utils.display,
 
     # Link / Unlink all wallets accross all servers
