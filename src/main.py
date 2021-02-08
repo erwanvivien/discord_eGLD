@@ -10,9 +10,6 @@ import database as db
 import utils
 import binance
 
-BOT_IDS = []
-DEV_IDS = [289145021922279425]
-
 ERRORS = []
 
 DISC_LNK = "https://discord.com/api/oauth2/authorize?client_id=807967570962939914&permissions=10304&scope=bot"
@@ -51,13 +48,17 @@ CMDS = {
     # Help message
     "egld$help": utils.help,
 
+    # Display how many servers are running
     "egld$server": utils.servers,
     "egld$servers": utils.servers,
     "egld$guild": utils.servers,
     "egld$guilds": utils.servers,
 
+    # Display how many members are using the bot
     "egld$member": utils.members,
     "egld$members": utils.members,
+
+    "egld$dev$prices": utils.dev_prices,
 }
 
 
@@ -75,7 +76,7 @@ class Client(discord.Client):
         #         type=discord.ActivityType.watching))
 
     async def on_message(self, message):
-        if message.author.id in BOT_IDS:        # Doesn't do anything if it's a bot message
+        if message.author.id in utils.BOT_IDS:        # Doesn't do anything if it's a bot message
             return
 
         split = message.content.split(' ', 1)  # separate mom?[cmd] from args

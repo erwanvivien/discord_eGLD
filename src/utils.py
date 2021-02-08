@@ -11,6 +11,9 @@ import binance
 
 LOG_FILE = "db/log"
 
+BOT_IDS = []
+DEV_IDS = [289145021922279425]
+
 
 def get_content(file):
     # Read file content
@@ -155,11 +158,11 @@ async def display_me(self, message, args):
     sql_args = [message.author.id, message.guild.id]
     res = db.exec(sql, sql_args)
 
-    if not res or not res[0][db.POS_WALLET]:
+    if not res or not res[0][db.MEMBERS_WALLET]:
         return await disc.error_message(message, title="🤯 Oops...",
                                         desc="You probably just forgot to link your wallet !\nSee `egold$help` for more informations")
 
-    wallet = res[0][db.POS_WALLET]
+    wallet = res[0][db.MEMBERS_WALLET]
     tokens = round(float(get_account_tokens(wallet)), 4)
     price = binance.price
     equi = tokens * price
@@ -188,10 +191,10 @@ async def display(self, message, args):
     total_usdt = 0
 
     for member in res:
-        if not member or not member[db.POS_WALLET]:
+        if not member or not member[db.MEMBERS_WALLET]:
             continue  # Treat this as empty
 
-        tokens = round(float(get_account_tokens(member[db.POS_WALLET])), 4)
+        tokens = round(float(get_account_tokens(member[db.MEMBERS_WALLET])), 4)
         equi = round(tokens * price, 2)
         total_egld += tokens
         total_usdt += equi
@@ -243,6 +246,21 @@ async def members(self, message, args):
     await disc.send_message(message, title="Number of members connected",
                             desc=f"Currently there are `{count}` members using the bot.",
                             url="")
+
+
+async def dev_prices(self, message, args):
+    if not message.author.id in DEV_IDS:
+        return
+
+    sql = "SELECT * FROM prices ORDER BY date DESC LIMIT 100"
+    rows = db.exec(sql)
+
+    rows_string = ""
+    for row in rows:
+        rows_string += f"{row[db.PRICES_DATE]}: {row[db.PRICES_VAL]}$\n"
+
+    await disc.send_message(message, title="Print prices", desc=rows_string)
+
 
 if not os.path.exists("db"):
     os.mkdir("db")

@@ -7,10 +7,14 @@ import utils
 
 DB_PATH = "db/database.db"
 
-POS_ID = 0
-POS_NAME = 1
-POS_GUILD = 2
-POS_WALLET = 3
+MEMBERS_ID = 0
+MEMBERS_NAME = 1
+MEMBERS_GUILD = 2
+MEMBERS_WALLET = 3
+
+PRICES_ID = 0
+PRICES_VAL = 1
+PRICES_DATE = 2
 
 
 def create():
