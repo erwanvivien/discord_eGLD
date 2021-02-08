@@ -1,11 +1,13 @@
 import discord
 import os
 from discord.ext import commands
+import asyncio
 
 
 import discord_utils
 import database as db
 import utils
+import binance
 
 BOT_IDS = []
 DEV_IDS = [289145021922279425]
@@ -53,15 +55,11 @@ class Client(discord.Client):
         print('==============================================================================================')
         print()
 
-        try:
-            await client.change_presence(
-                status=discord.Status.online,
-                activity=discord.Activity(
-                    name="eGLD !",
-                    type=discord.ActivityType.watching))
-        except Exception as error:
-            utils.log("on_ready", error,
-                      "Couldn't change bot's presence")
+        # await client.change_presence(
+        #     status=discord.Status.online,
+        #     activity=discord.Activity(
+        #         name="eGLD !",
+        #         type=discord.ActivityType.watching))
 
     async def on_message(self, message):
         if message.author.id in BOT_IDS:        # Doesn't do anything if it's a bot message
@@ -85,4 +83,21 @@ class Client(discord.Client):
 
 db.create()
 client = Client()
+
+
+async def status_task():
+    await client.wait_until_ready()
+    while True:
+        binance.update_price("EGLDUSDT")
+        binance.update_stats("EGLDUSDT")
+
+        await client.change_presence(
+            status=discord.Status.online,
+            activity=discord.Activity(
+                name=f"eGLD: {binance.price}$",
+                type=discord.ActivityType.watching))
+
+        await asyncio.sleep(60)
+
+client.loop.create_task(status_task())
 client.run(token)
