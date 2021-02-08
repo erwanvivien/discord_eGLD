@@ -17,7 +17,7 @@ ERRORS = []
 
 DISC_LNK = "https://discord.com/api/oauth2/authorize?client_id=807967570962939914&permissions=10304&scope=bot"
 
-token = utils.get_content("token_dev")
+token = utils.get_content("token")
 
 last_log_file = datetime.datetime.now()
 
