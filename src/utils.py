@@ -222,6 +222,26 @@ async def stats(self, message, args):
     s = f"{emj1} {binance.priceChange}$\n{emj2} {binance.priceChangePercent}%"
     return await disc.send_message(message, title="Last's 24h", desc=s)
 
+
+async def servers(self, message, args):
+    sql = "SELECT DISTINCT(id_discord) FROM members"
+    sql_answer = db.exec(sql)
+
+    count = len(sql_answer)
+    await disc.send_message(message, title="Number of servers connected",
+                            desc=f"Currently there are `{count}` servers using the bot.",
+                            url="")
+
+
+async def members(self, message, args):
+    sql = "SELECT DISTINCT(id) FROM members"
+    sql_answer = db.exec(sql)
+
+    count = len(sql_answer)
+    await disc.send_message(message, title="Number of servers connected",
+                            desc=f"Currently there are `{count}` members using the bot.",
+                            url="")
+
 if not os.path.exists("db"):
     os.mkdir("db")
     f = open(LOG_FILE, "w")
