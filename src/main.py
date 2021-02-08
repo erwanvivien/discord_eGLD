@@ -96,7 +96,7 @@ async def status_task():
                 name=f"eGLD: {binance.price}$",
                 type=discord.ActivityType.watching))
 
-        await asyncio.sleep(60)
+        await asyncio.sleep(15)
 
 client.loop.create_task(status_task())
 client.run(token)

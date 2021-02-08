@@ -11,12 +11,6 @@ last_update = datetime.datetime.now() - datetime.timedelta(minutes=10)
 
 
 def update_price():
-    global last_update
-    if last_update + datetime.timedelta(seconds=50) >= datetime.datetime.now():
-        utils.log("update_price", "PRICE has NOT been update",
-                  f"last_update: {last_update} & now: {datetime.datetime.now()}")
-        return
-
     r = requests.get(
         f"https://api.binance.com/api/v3/ticker/price?symbol=EGLDUSDT")
     js = r.json()
@@ -30,16 +24,9 @@ def update_price():
     price = round(float(js["price"]), 2)
     utils.log("update_price", "PRICE has been update",
               f"New price is {price}$ !")
-    last_update = datetime.datetime.now()
 
 
 def update_stats():
-    global last_update
-    if last_update + datetime.timedelta(seconds=50) >= datetime.datetime.now():
-        utils.log("update_stats", "PRICESTATS has NOT been update",
-                  f"last_update: {last_update} & now: {datetime.datetime.now()}")
-        return
-
     r = requests.get(
         f"https://api.binance.com/api/v3/ticker/24hr?symbol=EGLDUSDT")
     js = r.json()

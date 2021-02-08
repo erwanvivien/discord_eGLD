@@ -52,4 +52,4 @@ async def edit_message(message, title=WRONG_USAGE, desc=HELP_USAGE, url=HOWTO_UR
         return await message.edit(embed=create_embed(title, desc, BOT_COLOR, url))
     except Exception as error:
         utils.log("error_message", error,
-                  "Could not send message to discord")
+                  "Could not edit message")
