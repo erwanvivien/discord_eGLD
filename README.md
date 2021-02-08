@@ -20,6 +20,7 @@ Enter your wallet ID and we will fetch data for your current eGLD balance, conve
 ### 💸 money related
 - `egld$wallet` Will display your current eGLD balance and convert it to USD$
 - `egld$wallets` Will display everyone's eGLD balance and convert it to USD$ (only current discord, see above as to why)
+- `egld$stats` Will display current trend (last 24h), this is not the best command... (Work in progress)
 - `egld$value` Will display current eGLD value in USD$. It can also retrieve any currency on binance for example `egld$value ETH_USDT` will get information on this page [ETH_USDT](https://www.binance.com/en-IN/trade/ETH_USDT) (see URL if you want to understand 😊)
 
 ### 📢 broad commands
