@@ -78,7 +78,7 @@ async def add(self, message, args):
     sql_args = [args[0], message.author.id, message.guild.id]
     db.exec(sql, sql_args)
 
-    await disc.send_message(message, title="💹 Success !", desc="You successfully linked your eGLD wallet")
+    await disc.send_message(message, title="💹 Success !", desc=f"{disc.author_name(message.author)} successfully linked his eGLD wallet")
 
 
 async def delete(self, message, args):
@@ -107,7 +107,7 @@ async def delete_member(self, message, args):
 
 async def value(self, message, args):
     if len(args) == 0:
-        price = binance.get_price("EGLDUSDT")
+        price = binance.price
         return await disc.send_message(message, title="Current value eGLD",
                                        desc=f"Current price is **{price}**",
                                        url="https://www.binance.com/en-NG/trade/EGLD_BTC")
@@ -161,7 +161,7 @@ async def display_me(self, message, args):
 
     wallet = res[0][db.POS_WALLET]
     tokens = round(float(get_account_tokens(wallet)), 4)
-    price = binance.get_price("EGLDUSDT")
+    price = binance.price
     equi = tokens * price
 
     try:
@@ -179,7 +179,7 @@ async def display(self, message, args):
     sql_args = [message.guild.id]
     res = db.exec(sql, sql_args)
 
-    price = binance.get_price("EGLDUSDT")
+    price = binance.price
     all = pretty_string("NAME", "EGLD", "USD") + "\n"
     all += pretty_string("Current", "1", price)
     all += ('-' * 38) + '\n'
@@ -200,14 +200,10 @@ async def display(self, message, args):
     all += ('=' * 38) + '\n'
     all += pretty_string("Total:", total_egld, round(total_usdt, 2))
 
-    (priceChange, priceChangePercent) = binance.stats("EGLDUSDT")
-    if priceChange == -100000:
-        s = "Discord's balance"
-    else:
-        emj1 = "↗" if priceChange > 0 else "↘"
-        emj2 = "↗" if priceChangePercent > 0 else "↘"
+    emj1 = "↗" if binance.priceChange > 0 else "↘"
+    emj2 = "↗" if binance.priceChangePercent > 0 else "↘"
 
-        s = f"{emj1} {priceChange}$ ----- EGLD ----- {emj2} {priceChangePercent}% last 24H"
+    s = f"{emj1} {binance.priceChange}$ ----- EGLD ----- {emj2} {binance.priceChangePercent}% last 24H"
 
     await disc.send_message(message, title=s,
                             desc=f"```\n{all}\n```",
@@ -220,15 +216,11 @@ async def help(self, message, args):
 
 
 async def stats(self, message, args):
-    (priceChange, priceChangePercent) = binance.stats("EGLDUSDT")
-    if priceChange == -100000:
-        return await disc.error_message(message, title="Something went wrong", desc="We could not fetch any data from Binance\nWe are sorry !")
-    else:
-        emj1 = "↗" if priceChange > 0 else "↘"
-        emj2 = "↗" if priceChangePercent > 0 else "↘"
+    emj1 = "↗" if binance.priceChange > 0 else "↘"
+    emj2 = "↗" if binance.priceChangePercent > 0 else "↘"
 
-        s = f"{emj1} {priceChange}$\n{emj2} {priceChangePercent}%"
-        return await disc.send_message(message, title="Last's 24h", desc=s)
+    s = f"{emj1} {binance.priceChange}$\n{emj2} {binance.priceChangePercent}%"
+    return await disc.send_message(message, title="Last's 24h", desc=s)
 
 if not os.path.exists("db"):
     os.mkdir("db")
