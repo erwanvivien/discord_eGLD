@@ -97,11 +97,13 @@ client = Client()
 
 
 async def status_task():
+    # ALWAYS CLEAR LOG FILE HERE
     await client.wait_until_ready()
     while True:
         if last_log_file + datetime.timedelta(days=2) < datetime.datetime.now():
             f = open(utils.LOG_FILE, "w")  # resets the file
             f.close()
+            utils.log("status_task", "Reseted the log file", "RESET!!")
 
         binance.update()
 
