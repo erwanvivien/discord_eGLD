@@ -7,7 +7,7 @@ You can find this on the Maiar APP in **Profile > Settings > Privacy**
 🔗🔗
 Link / Unlink all wallets accross all servers
 `me$set | me$join | me$link` `<wallet_id>`
-`me$delete | me$remove`
+`me$unset | me$delete | me$unlink`
 
 ❌
 Unlink a wallet: Will remove your wallet-id from the current discord
