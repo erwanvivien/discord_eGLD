@@ -1,10 +1,13 @@
 #!/bin/bash
+
+name=discordegld
+
 git pull
-container_id=$(sudo docker container ls | grep discordegld | cut -d' ' -f1)
+container_id=$(sudo docker container ls | grep "$name" | cut -d' ' -f1)
 if ! [ -z "$container_id" ]; then
 	sudo docker container stop $container_id
 fi
-sudo docker image rm --force discordegld
-sudo docker build -t discordegld .
-sudo docker run -d -v db_discordegld:/app/db discordegld
-# sudo docker run -it -v db_discordhort:/app/db discordhort /bin/bash
+sudo docker image rm --force "$name"
+sudo docker build -t "$name" .
+sudo docker run -d -v db_"$name":/app/db "$name"
+# sudo docker run -it -v db_"$name":/app/db "$name" /bin/bash
