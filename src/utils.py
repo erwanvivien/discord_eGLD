@@ -238,7 +238,7 @@ async def members(self, message, args):
     sql_answer = db.exec(sql)
 
     count = len(sql_answer)
-    await disc.send_message(message, title="Number of servers connected",
+    await disc.send_message(message, title="Number of members connected",
                             desc=f"Currently there are `{count}` members using the bot.",
                             url="")
 
