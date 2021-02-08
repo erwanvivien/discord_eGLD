@@ -2,6 +2,7 @@ import discord
 import os
 from discord.ext import commands
 import asyncio
+import datetime
 
 
 import discord_utils
@@ -17,6 +18,8 @@ ERRORS = []
 DISC_LNK = "https://discord.com/api/oauth2/authorize?client_id=807967570962939914&permissions=10304&scope=bot"
 
 token = utils.get_content("token_dev")
+
+last_log_file = datetime.datetime.now()
 
 
 CMDS = {
@@ -96,6 +99,10 @@ client = Client()
 async def status_task():
     await client.wait_until_ready()
     while True:
+        if last_log_file + datetime.timedelta(days=2) < datetime.datetime.now():
+            f = open(utils.LOG_FILE, "w")  # resets the file
+            f.close()
+
         binance.update()
 
         await client.change_presence(
