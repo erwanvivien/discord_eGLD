@@ -39,3 +39,7 @@ You will need 3 files (don't put a newline in the files)
 - `token` You will need to get a bot token from [dev discord](https://discord.com/developers/applications)
 - `binance-key` For this two you will need to [create a Binance account](https://www.binance.com) and then [create an API KEY](https://www.binance.com/fr/my/settings/api-management)
 - `binance-secret`
+
+## Example
+Here you have an example if the `egld$wallets` command for my discord
+![Command example](imgs/example-display-server.png)
