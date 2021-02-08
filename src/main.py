@@ -106,6 +106,12 @@ async def cron():
     # ALWAYS CLEAR LOG FILE HERE
     await client.wait_until_ready()
     while True:
+        if last_log_file + datetime.timedelta(days=2) < datetime.datetime.now():
+            f = open(utils.LOG_FILE, "w")  # resets the file
+            f.close()
+            last_log_file = datetime.datetime.now()
+            utils.log("cron", "Reseted the log file", "RESET!!")
+
         if last_update_egld + datetime.timedelta(minutes=5) < datetime.datetime.now():
             sql = "INSERT INTO prices (val, date) VALUES (?, ?)"
             sql_args = [binance.price, str(datetime.datetime.now())]
@@ -113,12 +119,6 @@ async def cron():
             db.exec(sql, sql_args)
 
             last_update_egld = datetime.datetime.now()
-
-        if last_log_file + datetime.timedelta(days=2) < datetime.datetime.now():
-            f = open(utils.LOG_FILE, "w")  # resets the file
-            f.close()
-            last_log_file = datetime.datetime.now()
-            utils.log("cron", "Reseted the log file", "RESET!!")
 
         binance.update()
 
