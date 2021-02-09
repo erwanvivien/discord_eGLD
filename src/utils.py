@@ -284,8 +284,16 @@ async def dev_clean(self, message, args):
 
 
 async def graph(self, message, args):
-    plot.create_graph()
-    await disc.send_file(message, "graph_day.png", content="test")
+    nbdays = 1
+    creation_map = dict(zip(["day", "week", "month", "year"], [1, 7, 31, 365]))
+    if len(args) > 0:
+        if args[0].isnumeric():
+            nbdays = int(args[0])
+        elif args[0] in creation_map:
+            nbdays = creation_map[args[0]]
+
+    plot.create_graph(nbdays)
+    await disc.send_file(message, f"graph_{nbdays}.png", content=f"Graph over the last **{nbdays}** day(s)")
 
 if not os.path.exists("db"):
     os.mkdir("db")
