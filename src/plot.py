@@ -43,7 +43,10 @@ def create_graph(period=1):
     xmin = dates[xpos]
 
     ax.annotate(f"max: {ymax}", xy=(xmax, ymax), xytext=(xmax, ymax + 0.1))
-    ax.annotate(f"max: {ymin}", xy=(xmin, ymin), xytext=(xmin, ymin - 0.1))
+    ax.annotate(f"min: {ymin}", xy=(xmin, ymin), xytext=(xmin, ymin - 0.1))
+
+    plt.xticks(rotation=45, ha="right")
+    fig.tight_layout()
 
     plt.plot()
     plt.savefig(f'graph_{period}.png')
