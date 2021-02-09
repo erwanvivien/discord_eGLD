@@ -253,7 +253,15 @@ async def dev_prices(self, message, args):
     if not message.author.id in DEV_IDS:
         return await disc.error_message(message, title="💥🥵 Error", desc="It seems like you are not a developper ???\nHow did you find this command ? 😝")
 
-    sql = "SELECT * FROM prices ORDER BY date DESC LIMIT 100"
+    SORTING = "DESC" if not "last" in args else "ASC"
+    if args[0].isnumeric():
+        LIMIT = int(args[0])
+    elif args[1].isnumeric():
+        LIMIT = int(args[1])
+    else:
+        LIMIT = 100
+
+    sql = f"SELECT * FROM prices ORDER BY date {SORTING} LIMIT {LIMIT}"
     rows = db.exec(sql)
 
     rows_string = ""
