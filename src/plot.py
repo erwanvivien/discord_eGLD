@@ -27,9 +27,15 @@ def create_graph(period="day"):
     ax.xaxis.set_major_locator(days)
     ax.set_xlim(dates[-1], dates[0])
 
+    ymin = min(values)
+    xpos = values.index(ymin)
+    xmin = values[xpos]
+
     ymax = max(values)
     xpos = values.index(ymax)
     xmax = values[xpos]
+
+    ax.set_ylim(xmin - 0.5, xmax + 0.5)
 
     ax.annotate(f"max: {ymax}", xy=(xmax, ymax), xytext=(xmax, ymax+5))
 
