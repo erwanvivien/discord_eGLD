@@ -48,6 +48,11 @@ async def send_message(message, title=WRONG_USAGE, desc=HELP_USAGE, url=HOWTO_UR
     return await message.channel.send(embed=create_embed(title, desc, BOT_COLOR, url, icon_url, footer_url, footer_text))
 
 
+async def send_file(message, filename, content=""):
+    # Sends message to discord (bot_color)
+    return await message.channel.send(content, file=discord.File(filename))
+
+
 async def edit_message(message, title=WRONG_USAGE, desc=HELP_USAGE, url=HOWTO_URL,
                        icon_url="", footer_url=ICON_URL, footer_text="Goldr"):
     # Sends message to discord (bot_color)

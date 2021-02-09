@@ -7,6 +7,7 @@ import datetime
 import database as db
 import discord_utils as disc
 
+import plot
 import binance
 
 LOG_FILE = "db/log"
@@ -281,6 +282,10 @@ async def dev_clean(self, message, args):
 
     await disc.send_message(message, title="Cleaned DB", desc=f"Removed all values bellow {value}$ !")
 
+
+async def graph(self, message, args):
+    plot.create_graph()
+    await disc.send_file(message, "graph_day.png", content="test")
 
 if not os.path.exists("db"):
     os.mkdir("db")

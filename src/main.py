@@ -14,7 +14,7 @@ ERRORS = []
 
 DISC_LNK = "https://discord.com/api/oauth2/authorize?client_id=807967570962939914&permissions=10304&scope=bot"
 
-token = utils.get_content("token")
+token = utils.get_content("token_dev")
 
 last_log_file = datetime.datetime.now()
 last_update_egld = datetime.datetime.now() - datetime.timedelta(minutes=60)
@@ -35,6 +35,7 @@ CMDS = {
     "egld$value": utils.value,
     "egld$stat": utils.stats,
     "egld$stats": utils.stats,
+    "egld$graph": utils.graph,
     "egld$wallet": utils.display_me,
 
     # Server display
