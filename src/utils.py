@@ -257,6 +257,9 @@ async def dev_prices(self, message, args):
 
     rows_string = ""
     for row in rows:
+        if len(rows_string) > 1800:
+            await disc.send_message(message, title="Print prices", desc=rows_string)
+            rows_string = ""
         rows_string += f"{row[db.PRICES_DATE]}: {row[db.PRICES_VAL]}$\n"
 
     await disc.send_message(message, title="Print prices", desc=rows_string)

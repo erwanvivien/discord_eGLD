@@ -58,6 +58,7 @@ CMDS = {
     "egld$member": utils.members,
     "egld$members": utils.members,
 
+    # Dev commands
     "egld$dev$prices": utils.dev_prices,
     "egld$dev$clean": utils.dev_clean,
 }
