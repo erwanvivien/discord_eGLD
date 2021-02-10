@@ -14,19 +14,16 @@ days = mdates.DayLocator()  # every month
 years_fmt = mdates.DateFormatter('%Y')
 
 
-def create_graph(period=1):
+def create_graph(lastdays=1):
     sql = "SELECT * FROM prices ORDER BY date DESC"
     rows = db.exec(sql)
-
-    dates = [datetime.datetime.strptime(
-        row[db.PRICES_DATE], "%Y-%m-%d %H:%M:%S.%f") for row in rows]
 
     dates = []
     values = []
     for row in rows:
         row_date = datetime.datetime.strptime(
             row[db.PRICES_DATE], "%Y-%m-%d %H:%M:%S.%f")
-        if datetime.datetime.now() - datetime.timedelta(days=period) <= row_date:
+        if datetime.datetime.now() - datetime.timedelta(days=lastdays) <= row_date:
             dates += [row_date]
             values += [row[db.PRICES_VAL]]
 
@@ -49,4 +46,4 @@ def create_graph(period=1):
     fig.tight_layout()
 
     plt.plot()
-    plt.savefig(f'graph_{period}.png')
+    plt.savefig(f'graph_{lastdays}.png')
