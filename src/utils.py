@@ -314,6 +314,12 @@ async def dev_create(self, message, args):
     await disc.send_message(message, title="Adding values", desc=f"I added values for last {value} day(s)")
 
 
+async def report(self, message, args):
+    name = disc.author_name(message.author)
+    report_msg = " ".join(args)
+    await disc.report(self, f"{name} reported:", report_msg)
+
+
 async def graph(self, message, args):
     nbdays = 1
     creation_map = dict(

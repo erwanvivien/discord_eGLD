@@ -5,7 +5,7 @@ import asyncio
 import datetime
 
 
-import discord_utils
+import discord_utils as disc
 import database as db
 import utils
 import binance
@@ -14,7 +14,7 @@ ERRORS = []
 
 DISC_LNK = "https://discord.com/api/oauth2/authorize?client_id=807967570962939914&permissions=10304&scope=bot"
 
-token = utils.get_content("token")
+token = utils.get_content("token_dev")
 
 last_log_file = datetime.datetime.now()
 last_update_egld = datetime.datetime.now() - datetime.timedelta(minutes=60)
@@ -59,6 +59,9 @@ CMDS = {
     "egld$member": utils.members,
     "egld$members": utils.members,
 
+    # Send report messages
+    "egld$report": utils.report,
+
     # Dev commands
     "egld$dev$prices": utils.dev_prices,
     "egld$dev$clean": utils.dev_clean,
@@ -80,6 +83,8 @@ class Client(discord.Client):
         #         name="eGLD !",
         #         type=discord.ActivityType.watching))
 
+        await disc.report(self, "bruh", "yoyoyooo")
+
     async def on_message(self, message):
         if message.author.id in utils.BOT_IDS:        # Doesn't do anything if it's a bot message
             return
@@ -89,7 +94,7 @@ class Client(discord.Client):
         args = split[1].split(' ') if len(split) > 1 else []
 
         # Get Discord Nick if existant or discord Name
-        name = discord_utils.author_name(message.author, False)
+        name = disc.author_name(message.author, False)
 
         # Runs command if it's a known command
         if cmd in CMDS:
@@ -111,29 +116,32 @@ async def cron():
     # ALWAYS CLEAR LOG FILE HERE
     await client.wait_until_ready()
     while True:
-        if last_log_file + datetime.timedelta(days=2) < datetime.datetime.now():
-            f = open(utils.LOG_FILE, "w")  # resets the file
-            f.close()
-            last_log_file = datetime.datetime.now()
-            utils.log("cron", "Reseted the log file", "RESET!!")
+        try:
+            if last_log_file + datetime.timedelta(days=2) < datetime.datetime.now():
+                f = open(utils.LOG_FILE, "w")  # resets the file
+                f.close()
+                last_log_file = datetime.datetime.now()
+                utils.log("cron", "Reseted the log file", "RESET!!")
 
-        if binance.price >= 0 and last_update_egld + datetime.timedelta(minutes=2) < datetime.datetime.now():
-            sql = "INSERT INTO prices (val, date) VALUES (?, ?)"
-            sql_args = [binance.price, str(datetime.datetime.now())]
+            if binance.price >= 0 and last_update_egld + datetime.timedelta(minutes=2) < datetime.datetime.now():
+                sql = "INSERT INTO prices (val, date) VALUES (?, ?)"
+                sql_args = [binance.price, str(datetime.datetime.now())]
 
-            db.exec(sql, sql_args)
+                db.exec(sql, sql_args)
 
-            last_update_egld = datetime.datetime.now()
+                last_update_egld = datetime.datetime.now()
 
-        binance.update()
+            binance.update()
 
-        await client.change_presence(
-            status=discord.Status.online,
-            activity=discord.Activity(
-                name=f"eGLD: {binance.price}$",
-                type=discord.ActivityType.watching))
+            await client.change_presence(
+                status=discord.Status.online,
+                activity=discord.Activity(
+                    name=f"eGLD: {binance.price}$",
+                    type=discord.ActivityType.watching))
 
-        await asyncio.sleep(15)
+            await asyncio.sleep(15)
+        except Exception as e:
+            await disc.report(client, "Error in CRON loop", str(e))
 
 client.loop.create_task(cron())
 client.run(token)
