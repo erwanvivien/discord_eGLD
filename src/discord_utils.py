@@ -14,6 +14,8 @@ ERROR_COLOR = discord.Colour(0xff0000)
 WARN_COLOR = discord.Colour(0xebdb34)
 VALID_COLOR = discord.Colour(0x55da50)
 
+REPORT_CHANN_ID = 809017851242872893
+
 
 def author_name(author, discriminator=True):
     # Get nick from msg author (discord) if exists
@@ -57,3 +59,10 @@ async def edit_message(message, title=WRONG_USAGE, desc=HELP_USAGE, url=HOWTO_UR
                        icon_url="", footer_url=ICON_URL, footer_text="Goldr"):
     # Sends message to discord (bot_color)
     return await message.edit(embed=create_embed(title, desc, BOT_COLOR, url, icon_url, footer_url, footer_text))
+
+
+async def report(client, title, desc):
+    report_channel = client.get_channel(REPORT_CHANN_ID)
+    embed = create_embed(
+        title, f"Reported message was :\n```{desc}```")
+    await report_channel.send("<@289145021922279425>\n", embed=embed)
