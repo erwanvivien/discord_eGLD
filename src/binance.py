@@ -60,3 +60,16 @@ def get_price(name):
 
     price = round(float(js["price"]), 2)
     return price
+
+
+def get_price_ago(name, daysago):
+    # interval 1D
+    current = datetime.datetime.now()
+    start = current - datetime.timedelta(days=daysago)
+
+    start_long = round(datetime.datetime.timestamp(start)) * 1000
+    end_long = round(datetime.datetime.timestamp(current)) * 1000
+
+    r = requests.get(
+        f"https://api.binance.com/api/v3/klines?symbol={name}&interval=1d&startTime={start_long}&endTime={end_long}")
+    return r.json()
