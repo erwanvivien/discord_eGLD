@@ -254,9 +254,9 @@ async def dev_prices(self, message, args):
         return await disc.error_message(message, title="💥🥵 Error", desc="It seems like you are not a developper ???\nHow did you find this command ? 😝")
 
     SORTING = "DESC" if not "last" in args else "ASC"
-    if args[0].isnumeric():
+    if len(args) >= 1 and args[0].isnumeric():
         LIMIT = int(args[0])
-    elif args[1].isnumeric():
+    elif len(args) >= 2 and args[1].isnumeric():
         LIMIT = int(args[1])
     else:
         LIMIT = 100
@@ -281,7 +281,7 @@ async def dev_clean(self, message, args):
     try:
         value = float(args[0])
     except:
-        return await disc.error_message(message, title="Wrong usage", desc="You didn't provide an integer value")
+        return await disc.error_message(message, title="BAD DEV!!!", desc="You didn't provide an integer value")
 
     sql = "DELETE FROM prices WHERE val < ?"
     sql_args = [value]
@@ -291,17 +291,46 @@ async def dev_clean(self, message, args):
     await disc.send_message(message, title="Cleaned DB", desc=f"Removed all values bellow {value}$ !")
 
 
+async def dev_create(self, message, args):
+    if not message.author.id in DEV_IDS:
+        return await disc.error_message(message, title="💥🥵 Error", desc="It seems like you are not a developper ???\nHow did you find this command ? 😝")
+
+    try:
+        value = int(args[0])
+    except:
+        return await disc.error_message(message, title="BAD DEV!!!", desc="You didn't provide an integer value")
+
+    day_data = binance.get_price_ago("EGLDUSDT", value)
+    for row in day_data:
+        dt = str(datetime.datetime.fromtimestamp(row[0] / 1000)) + ".000000"
+        highval = float(row[2])
+        lowval = float(row[3])
+
+        sql = f"INSERT INTO prices (val, date) VALUES (?, ?)"
+        sql_args = [(highval + lowval) / 2, dt]
+
+        db.exec(sql, sql_args)
+
+    await disc.send_message(message, title="Adding values", desc=f"I added values for last {value} day(s)")
+
+
 async def graph(self, message, args):
     nbdays = 1
-    creation_map = dict(zip(["day", "week", "month", "year"], [1, 7, 31, 365]))
+    creation_map = dict(
+        zip(["day", "week", "biweek", "month", "year"], [1, 7, 14, 31, 365]))
     if len(args) > 0:
         if args[0].isnumeric():
             nbdays = int(args[0])
         elif args[0] in creation_map:
             nbdays = creation_map[args[0]]
 
+    if nbdays > 365:
+        nbdays = 365
+
     plot.create_graph(nbdays)
     await disc.send_file(message, f"graph_{nbdays}.png", content=f"Graph over the last **{nbdays}** day(s)")
+
+    os.remove(f"graph_{nbdays}.png")
 
 if not os.path.exists("db"):
     os.mkdir("db")
