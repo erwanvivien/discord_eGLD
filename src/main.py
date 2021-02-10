@@ -60,7 +60,7 @@ CMDS = {
     "egld$members": utils.members,
 
     # Send report messages
-    "egld$report": utils.rep²²ort,
+    "egld$report": utils.report,
 
     # Dev commands
     "egld$dev$prices": utils.dev_prices,

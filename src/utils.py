@@ -323,7 +323,7 @@ async def report(self, message, args):
 async def graph(self, message, args):
     nbdays = 1
     creation_map = dict(
-        zip(["day", "week", "biweek", "month", "year"], [1, 7, 14, 31, 365]))
+        zip(["day", "week", "biweek", "month", "year", "alltime"], [1, 7, 14, 31, 365, 5000]))
     if len(args) > 0:
         if args[0].isnumeric():
             nbdays = int(args[0])
