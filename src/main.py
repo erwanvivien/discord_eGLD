@@ -83,7 +83,7 @@ class Client(discord.Client):
         #         name="eGLD !",
         #         type=discord.ActivityType.watching))
 
-        await disc.report(self, "Started", "Success !")
+        await disc.report(self, "Started", "Started successfully !")
 
     async def on_message(self, message):
         if message.author.id in utils.BOT_IDS:        # Doesn't do anything if it's a bot message
