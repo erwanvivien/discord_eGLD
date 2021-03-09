@@ -321,9 +321,21 @@ async def report(self, message, args):
 
 
 async def graph(self, message, args):
+    if args and args[0] == "help":
+        return await disc.send_message(message, title="Help `graph` usage", desc="""
+You can use many values for egld$graph:
+
+- `day`, default
+- `week`
+- `biweek`
+- `month`
+- `year`
+- `alltime`
+- Any value, `5`, `14`, etc""")
+
     nbdays = 1
     creation_map = dict(
-        zip(["day", "week", "biweek", "month", "year", "alltime"], [1, 7, 14, 31, 365, 5000]))
+        zip(["day", "week", "biweek", "fortnight", "fortnite", "month", "year", "alltime"], [1, 7, 14, 14, 14, 31, 365, 365]))
     if len(args) > 0:
         if args[0].isnumeric():
             nbdays = int(args[0])
