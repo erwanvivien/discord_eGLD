@@ -113,6 +113,12 @@ async def cron():
     global last_log_file
     global last_update_egld
 
+    sql = "SELECT val FROM prices ORDER BY val DESC LIMIT 1"
+    max_price = db.exec(sql)[0][0]
+
+    sql = "SELECT val FROM prices ORDER BY val ASC LIMIT 1"
+    min_price = db.exec(sql)[0][0]
+
     # ALWAYS CLEAR LOG FILE HERE
     await client.wait_until_ready()
     while True:
@@ -123,13 +129,18 @@ async def cron():
                 last_log_file = datetime.datetime.now()
                 utils.log("cron", "Reseted the log file", "RESET!!")
 
-            if binance.price >= 0 and last_update_egld + datetime.timedelta(minutes=2) < datetime.datetime.now():
+            if binance.price >= 0 and (last_update_egld + datetime.timedelta(minutes=2) < datetime.datetime.now() or binance.price < min_price or binance.price > max_price):
                 sql = "INSERT INTO prices (val, date) VALUES (?, ?)"
                 sql_args = [binance.price, str(datetime.datetime.now())]
 
                 db.exec(sql, sql_args)
 
                 last_update_egld = datetime.datetime.now()
+
+                if binance.price < min_price:
+                    min_price = binance.price
+                if binance.price > max_price:
+                    max_price = binance.price
 
             binance.update()
 
