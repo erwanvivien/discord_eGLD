@@ -121,15 +121,22 @@ async def cron():
 
     # ALWAYS CLEAR LOG FILE HERE
     await client.wait_until_ready()
+
     while True:
         try:
+            # Resets the log file every two days
             if last_log_file + datetime.timedelta(days=2) < datetime.datetime.now():
-                f = open(utils.LOG_FILE, "w")  # resets the file
+                f = open(utils.LOG_FILE, "w")
                 f.close()
                 last_log_file = datetime.datetime.now()
                 utils.log("cron", "Reseted the log file", "RESET!!")
 
-            if binance.price >= 0 and (last_update_egld + datetime.timedelta(minutes=2) < datetime.datetime.now() or binance.price < min_price or binance.price > max_price):
+            # Updates the price
+            binance.update()
+
+            # Appends to the DB every 2 mins' results & if it's a new high / low
+            if binance.price >= 0 and (last_update_egld + datetime.timedelta(minutes=2) < datetime.datetime.now()
+                                       or binance.price < min_price or binance.price > max_price):
                 sql = "INSERT INTO prices (val, date) VALUES (?, ?)"
                 sql_args = [binance.price, str(datetime.datetime.now())]
 
@@ -142,8 +149,7 @@ async def cron():
                 if binance.price > max_price:
                     max_price = binance.price
 
-            binance.update()
-
+            # Updated the bot's status
             await client.change_presence(
                 status=discord.Status.online,
                 activity=discord.Activity(
@@ -152,7 +158,9 @@ async def cron():
 
             await asyncio.sleep(15)
         except Exception as e:
-            await disc.report(client, "Error in CRON loop", str(e))
+            print(e)
+            print(type(e))
+            await disc.report(client, "Error in CRON loop\nWaiting 1 minute.", str(e))
 
 client.loop.create_task(cron())
 client.run(token)
