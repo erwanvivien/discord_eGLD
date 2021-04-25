@@ -32,7 +32,7 @@ For more information see [help page](help).
 
 ## Thanks
 - [Lycoon](https://github.com/Lycoon) for the assets he provided !
-- Philippe for the idea !
+- [Philippe](https://github.com/philippelef) for the idea !
 
 ## Deploying the bot yourself
 You will need 3 files (don't put a newline in the files)
