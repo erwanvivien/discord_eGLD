@@ -65,6 +65,7 @@ CMDS = {
     # Dev commands
     "egld$dev$prices": utils.dev_prices,
     "egld$dev$clean": utils.dev_clean,
+    "egld$dev$clean_exact": utils.dev_clean_exact,
     "egld$dev$clear": utils.dev_clean,
     "egld$dev$create": utils.dev_create,
 }

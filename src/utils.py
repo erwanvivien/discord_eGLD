@@ -291,6 +291,23 @@ async def dev_clean(self, message, args):
     await disc.send_message(message, title="Cleaned DB", desc=f"Removed all values bellow {value}$ !")
 
 
+async def dev_clean_exact(self, message, args):
+    if not message.author.id in DEV_IDS:
+        return await disc.error_message(message, title="💥🥵 Error", desc="It seems like you are not a developper ???\nHow did you find this command ? 😝")
+
+    try:
+        value = float(args[0])
+    except:
+        return await disc.error_message(message, title="BAD DEV!!!", desc="You didn't provide an integer value")
+
+    sql = "DELETE FROM prices WHERE val = ?"
+    sql_args = [value]
+
+    db.exec(sql, sql_args)
+
+    await disc.send_message(message, title="Cleaned DB", desc=f"Removed all values bellow {value}$ !")
+
+
 async def dev_create(self, message, args):
     if not message.author.id in DEV_IDS:
         return await disc.error_message(message, title="💥🥵 Error", desc="It seems like you are not a developper ???\nHow did you find this command ? 😝")
