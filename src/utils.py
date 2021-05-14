@@ -305,7 +305,7 @@ async def dev_clean_exact(self, message, args):
 
     db.exec(sql, sql_args)
 
-    await disc.send_message(message, title="Cleaned DB", desc=f"Removed all values bellow {value}$ !")
+    await disc.send_message(message, title="Cleaned DB", desc=f"Removed all values equal to {value}$ !")
 
 
 async def dev_create(self, message, args):
