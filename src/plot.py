@@ -15,18 +15,29 @@ years_fmt = mdates.DateFormatter('%Y')
 
 
 def create_graph(lastdays=1):
-    sql = "SELECT * FROM prices ORDER BY date DESC"
-    rows = db.exec(sql)
+    start = datetime.datetime.now()
+    sql = "SELECT * FROM prices WHERE date >= ? ORDER BY date DESC LIMIT ?"
+    args = (datetime.datetime.strftime(
+        datetime.datetime.now() - datetime.timedelta(days=lastdays),
+        r"%Y-%m-%d %H"), lastdays * 1440)
+    rows = db.exec(sql, args)
 
+    print(datetime.datetime.now() - datetime.timedelta(days=lastdays))
+    print("query:\t", datetime.datetime.now() - start)
+
+    start = datetime.datetime.now()
     dates = []
     values = []
     for row in rows:
         row_date = datetime.datetime.strptime(
-            row[db.PRICES_DATE], "%Y-%m-%d %H:%M:%S.%f")
+            row[db.PRICES_DATE], r"%Y-%m-%d %H:%M:%S.%f")
         if datetime.datetime.now() - datetime.timedelta(days=lastdays) <= row_date:
-            dates += [row_date]
-            values += [row[db.PRICES_VAL]]
+            dates.append(row_date)
+            values.append(row[db.PRICES_VAL])
 
+    print("filter:\t", datetime.datetime.now() - start)
+
+    start = datetime.datetime.now()
     fig, ax = plt.subplots()
 
     ax.plot(dates, values)
@@ -44,6 +55,10 @@ def create_graph(lastdays=1):
 
     plt.xticks(rotation=45, ha="right")
     fig.tight_layout()
+    print("graph:\t", datetime.datetime.now() - start)
 
+    start = datetime.datetime.now()
     plt.plot()
     plt.savefig(f'graph_{lastdays}.png')
+    print("plot:\t", datetime.datetime.now() - start)
+    print()
