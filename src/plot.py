@@ -15,8 +15,12 @@ years_fmt = mdates.DateFormatter('%Y')
 
 
 def create_graph(lastdays=1):
-    sql = "SELECT * FROM prices ORDER BY date DESC"
-    rows = db.exec(sql)
+    sql = "SELECT * FROM prices ORDER BY date DESC LIMIT ?"
+    args = (lastdays * 5760, )
+
+    print(datetime.datetime.now())
+    rows = db.exec(sql, args)
+    print(datetime.datetime.now())
 
     dates = []
     values = []
@@ -24,8 +28,8 @@ def create_graph(lastdays=1):
         row_date = datetime.datetime.strptime(
             row[db.PRICES_DATE], "%Y-%m-%d %H:%M:%S.%f")
         if datetime.datetime.now() - datetime.timedelta(days=lastdays) <= row_date:
-            dates += [row_date]
-            values += [row[db.PRICES_VAL]]
+            dates.append(row_date)
+            values.append(row[db.PRICES_VAL])
 
     fig, ax = plt.subplots()
 
